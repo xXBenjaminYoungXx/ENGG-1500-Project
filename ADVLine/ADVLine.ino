@@ -173,7 +173,7 @@ void loop() {
     analogWrite(5, 110);
     analogWrite(6, 20);
     Serial.println("Right");
-  }else if(lineDist>10){
+  } /*else if(lineDist>10){
     analogWrite(5, 200);
     analogWrite(6, 0);
     Serial.println("Right");
@@ -182,13 +182,18 @@ void loop() {
     analogWrite(6, 200);
     Serial.println("left");
   }
+  */else{
+    analogWrite(5, 90);
+    analogWrite(6, 90);
+  }
 
   if(w1>150 && w2>150 && w1Prev<40 &&w4Prev < 40){//lines on both sides
     State1+=1;
+    
+  }
     w1Prev = w1;
     w4Prev = w4;
-  }
-
+    
   if(State1 >=5){//We can change value depending on course. Sate >=5 means we passed rumble strip, and need to look for turn
     if(w1>450){
       turnLeft();
@@ -199,24 +204,21 @@ void loop() {
       State1 = 0;
     }
   }
-  else{
-    analogWrite(5, 60);
-    analogWrite(6, 60);
-  }
+ 
   
 }
 void turnRight(void){
-  delay(100);
+  delay(500);
   leftBackwards();
   rightBackwards();
   analogWrite(5, 100);
   analogWrite(6, 100);
-  delay(100);
+  delay(500);
   leftForwards();
   rightBackwards();
   analogWrite(5, 100);//Can use pcb here insted
   analogWrite(6, 100);
-  delay(200);
+  delay(800);
   rightForwards();
   while(w2<100 && w3<100){
   }
@@ -225,17 +227,17 @@ void turnRight(void){
   return;
 }
 void turnLeft(void){
-  delay(100);
+  delay(500);
   leftBackwards();
   rightBackwards();
   analogWrite(5, 100);
   analogWrite(6, 100);
-  delay(100);
+  delay(500);
   rightForwards();
   leftBackwards();
   analogWrite(5, 100);//Can use pcb here insted
   analogWrite(6, 100);
-  delay(200);
+  delay(800);
   leftForwards();
   while(w2<100 && w3<100){//while line cant be seen
   }
