@@ -1,4 +1,7 @@
-+float x1 = 31;
+#include <ENGG1500Lib.h>
+#define Left 5
+#define Right 6
+float x1 = 31;
 float x2 = 10;
 float x3 = -10;
 float x4 = -31;
@@ -13,7 +16,10 @@ float w4Prev;
 
 float State1 = 0;
 
-int standarsSpd = 80;
+int standardSpd = 80;
+int standardSpdLeft = 80;
+int standardSpdRight = 80;
+float speedDiff = 0;
 
 float den;
 float numer;
@@ -55,6 +61,8 @@ void loop() {
      
      float lineDist = numer/den;
 
+     
+
      //THE BELOW SERIES OF IF STATEMENTS NEED TO BE ADJUSTED ACCORDINLY TO STANDARD SPEED (Which is 80. we need to decide what speed we will base it off)
      //THE CURRENT SPEEDS ARE JUST AN EXAMPLE
      //Example pseudo:
@@ -69,39 +77,68 @@ void loop() {
       * Exmple code below:
       */
      //analogWrite(5, StandardSpd + 10);
-     if(lineDist<-0.6&&lineDist>-1.5){//left
+     
+     speedDiff = lineDist*8;
+
+     Serial.println(speedDiff);
+     delay(300);
+     if(speedDiff<0){
+          speedDiff = -speedDiff;
+     }
+     if(speedDiff>standardSpd){
+          speedDiff = standardSpd;
+     }
+     if(lineDist>0.5){//right
+          analogWrite(5, standardSpdLeft + speedDiff);
+          analogWrite(6, standardSpdRight - speedDiff);
+     }
+     else if(lineDist<-0.5){
+          analogWrite(5, standardSpdLeft - speedDiff);
+          analogWrite(6, standardSpdRight + speedDiff);
+     }
+     else{
+     
+          analogWrite(5, standardSpdLeft);
+          analogWrite(6, standardSpdRight);
+     }
+     /*Serial.println(lineDist);
+     if(lineDist<-1&&lineDist>-2){//left
            analogWrite(5, 40);
            analogWrite(6, 90);
       }
-      else if(lineDist>0.6&&lineDist<1.5){
+      else if(lineDist>1&&lineDist<2){
            analogWrite(5, 90);
            analogWrite(6, 40);
       }
-      else if(lineDist<-1.5&&lineDist>-8){
+      else if(lineDist<-2&&lineDist>-3){
            analogWrite(5, 30);
            analogWrite(6, 100);
       }
-      else if(lineDist>1.5&&lineDist<8){
+      else if(lineDist>2&&lineDist<3){
            analogWrite(5, 100);
            analogWrite(6, 30);
       }
-      else if(lineDist<-8&&lineDist>-10){
+      else if(lineDist<-3&&lineDist>-4){
            analogWrite(5, 20);
            analogWrite(6, 110);
       }
-      else if(lineDist>8&&lineDist<10){
+      else if(lineDist>3&&lineDist<4){
            analogWrite(5, 110);
            analogWrite(6, 20);
       }
-      else if(lineDist>10){
+      else if(lineDist>4){
            analogWrite(5, 200);
            analogWrite(6, 0);
       }
-      else if(lineDist<-10){
+      else if(lineDist<-4){
            analogWrite(5, 0);
            analogWrite(6, 200);
       }
-    
+      else{
+           analogWrite(5, standardSpdLeft);
+           analogWrite(6, standardSpdRight);
+      }
+      */
       if(w1>150 && w2>150 && w1Prev<40 &&w4Prev < 40){//lines on both sides
            State1+=1;
            w1Prev = w1;
@@ -118,114 +155,6 @@ void loop() {
                State1 = 0;
            }
       }
-      else{
-           analogWrite(5, 60);
-           analogWrite(6, 60);
-      }
-      
-}
-void turnRight(void){
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-     
-     //Reverse
-     leftBackwards();
-     rightBackwards();
-     analogWrite(5, 100);
-     analogWrite(6, 100);
-     delay(100);
-
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-
-     //Turn
-     leftForwards();
-     rightBackwards();
-     analogWrite(5, 100);//Can use pcb here insted
-     analogWrite(6, 100);
-     delay(200);
-
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-
-     //Forward
-     rightForwards();
-
-     //While on white surface
-     while(w2<100 && w3<100){//while line cant be seen
-     }
-
-     //Resume standars speed
-     analogWrite(5, standardSpd);//return to standard speed
-     analogWrite(6, standardSpd);
-     return;
-}
-void turnLeft(void){
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-     
-     //Reverse
-     leftBackwards();
-     rightBackwards();
-     analogWrite(5, 100);
-     analogWrite(6, 100);
-     delay(100);
-
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-
-     //Turn
-     rightForwards();
-     leftBackwards();
-     analogWrite(5, 100);//Can use pcb here insted
-     analogWrite(6, 100);
-     delay(200);
-
-     //Stop
-     analogWrite(5, 0);
-     analogWrite(6, 0);
-     delay(100);
-
-     //Forward
-     leftForwards();
-
-     //While on white surface
-     while(w2<100 && w3<100){//while line cant be seen
-     }
-
-     //Resume standars speed
-     analogWrite(5, standardSpd);//return to standard speed
-     analogWrite(6, standardSpd);
-     return;
+            
 }
 
-void leftBackwards(void) 
-{
-    digitalWrite(8,LOW); //IN1
-    digitalWrite(9,HIGH); //IN2
-}
-void leftForwards(void) 
-{
-    digitalWrite(8,HIGH); //IN1
-    digitalWrite(9,LOW); //IN2
-}
-void rightBackwards(void) 
-{
-    digitalWrite(10,LOW); //IN3
-    digitalWrite(11,HIGH); //IN4
-}
-void rightForwards(void) 
-{
-    digitalWrite(10,HIGH); //IN3
-    digitalWrite(11,LOW); //IN4
-}
