@@ -77,7 +77,7 @@ void loop() {
       * Exmple code below:
       */
      //analogWrite(5, StandardSpd + 10);
-     
+     Serial.println(State1);
      speedDiff = lineDist*8;
 
      if(speedDiff<0){
@@ -91,7 +91,7 @@ void loop() {
           analogWrite(5, standardSpdLeft + speedDiff);
           analogWrite(6, standardSpdRight - speedDiff);
      }
-     else if(lineDist<+0.5){
+     else if(lineDist<0.5){
           analogWrite(5, standardSpdLeft - speedDiff);
           analogWrite(6, standardSpdRight + speedDiff);
      }
@@ -100,23 +100,20 @@ void loop() {
           analogWrite(5, standardSpdLeft);
           analogWrite(6, standardSpdRight);
      }
-      Serial.println(State1);
-      Serial.println(w1+w4);
-      //delay(100);
-      if((w1+w4)>75 && w1Prev<40 &&w4Prev < 40){//lines on both sides
-           State1+=1;
-      }
-      w1Prev = w1;
-      w4Prev = w4;
-      if(State1 >=3){//We can change value depending on course. Sate >=5 means we passed rumble strip, and need to look for turn
-           if(w1>450){
-               turnLeft();
-               State1 = 0;
-           }
-           if(w4 > 450){
-               turnRight();
-               State1 = 0;
-           }
-      }
-            
+      
+     if((w1+w4)>75 && w1Prev<40 &&w4Prev < 40){//lines on both sides
+          State1+=1;
+     }
+     w1Prev = w1;
+     w4Prev = w4;
+     if(State1 >=5){//We can change value depending on course. Sate >=5 means we passed rumble strip, and need to look for turn
+          if(w1>450){
+              turnLeft();
+              State1 = -60;
+          }
+          else if(w4 > 450){
+              turnRight();
+              State1 = -60;
+          }
+     }       
 }

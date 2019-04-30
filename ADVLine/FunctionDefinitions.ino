@@ -1,20 +1,20 @@
-void turnRight(void){
+void turnLeft(void){
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
      
      //Reverse
      leftBackwards();
      rightBackwards();
      analogWrite(5, 100);
      analogWrite(6, 100);
-     delay(100);
+     delay(300);
 
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
 
      //Turn
      leftForwards();
@@ -26,13 +26,17 @@ void turnRight(void){
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
 
      //Forward
      rightForwards();
+     leftForwards();
+     analogWrite(5, 100);
+     delay(50);
+     analogWrite(6, 100);
 
      //While on white surface
-     while(w2<100 && w3<100){//while line cant be seen
+     while(w2<400 && w3<400){//while line cant be seen
      }
 
      //Resume standars speed
@@ -40,41 +44,47 @@ void turnRight(void){
      analogWrite(6, standardSpdRight);
      return;
 }
-void turnLeft(void){
+void turnRight(void){
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
      
      //Reverse
      leftBackwards();
      rightBackwards();
      analogWrite(5, 100);
      analogWrite(6, 100);
-     delay(100);
+     delay(200);
 
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
 
      //Turn
      rightForwards();
      leftBackwards();
      analogWrite(5, 100);//Can use pcb here insted
      analogWrite(6, 100);
-     delay(200);
+     delay(300);
 
      //Stop
      analogWrite(5, 0);
      analogWrite(6, 0);
-     delay(100);
+     delay(300);
 
      //Forward
      leftForwards();
+     rightForwards();
+
+     analogWrite(6, 100);
+     delay(50);
+     analogWrite(5, 100);
+     
 
      //While on white surface
-     while(w2<100 && w3<100){//while line cant be seen
+     while(w2<400 && w3<400){//while line cant be seen
      }
 
      //Resume standars speed
