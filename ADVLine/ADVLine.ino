@@ -11,15 +11,15 @@ float w2;
 float w3;
 float w4;
 
-float w1Prev;
-float w4Prev;
+float w1Prev = 0;
+float w4Prev = 0;
 
 float State1 = 0;
 
 int standardSpd = 80;
 int standardSpdLeft = 80;
 int standardSpdRight = 80;
-float speedDiff = 0;
+int speedDiff = 0;
 
 float den;
 float numer;
@@ -80,19 +80,18 @@ void loop() {
      
      speedDiff = lineDist*8;
 
-     Serial.println(speedDiff);
-     delay(300);
      if(speedDiff<0){
           speedDiff = -speedDiff;
      }
      if(speedDiff>standardSpd){
           speedDiff = standardSpd;
      }
-     if(lineDist>0.5){//right
+    
+     if(lineDist>-0.5){//right
           analogWrite(5, standardSpdLeft + speedDiff);
           analogWrite(6, standardSpdRight - speedDiff);
      }
-     else if(lineDist<-0.5){
+     else if(lineDist<+0.5){
           analogWrite(5, standardSpdLeft - speedDiff);
           analogWrite(6, standardSpdRight + speedDiff);
      }
@@ -101,51 +100,15 @@ void loop() {
           analogWrite(5, standardSpdLeft);
           analogWrite(6, standardSpdRight);
      }
-     /*Serial.println(lineDist);
-     if(lineDist<-1&&lineDist>-2){//left
-           analogWrite(5, 40);
-           analogWrite(6, 90);
-      }
-      else if(lineDist>1&&lineDist<2){
-           analogWrite(5, 90);
-           analogWrite(6, 40);
-      }
-      else if(lineDist<-2&&lineDist>-3){
-           analogWrite(5, 30);
-           analogWrite(6, 100);
-      }
-      else if(lineDist>2&&lineDist<3){
-           analogWrite(5, 100);
-           analogWrite(6, 30);
-      }
-      else if(lineDist<-3&&lineDist>-4){
-           analogWrite(5, 20);
-           analogWrite(6, 110);
-      }
-      else if(lineDist>3&&lineDist<4){
-           analogWrite(5, 110);
-           analogWrite(6, 20);
-      }
-      else if(lineDist>4){
-           analogWrite(5, 200);
-           analogWrite(6, 0);
-      }
-      else if(lineDist<-4){
-           analogWrite(5, 0);
-           analogWrite(6, 200);
-      }
-      else{
-           analogWrite(5, standardSpdLeft);
-           analogWrite(6, standardSpdRight);
-      }
-      */
-      if(w1>150 && w2>150 && w1Prev<40 &&w4Prev < 40){//lines on both sides
+      Serial.println(State1);
+      Serial.println(w1+w4);
+      //delay(100);
+      if((w1+w4)>75 && w1Prev<40 &&w4Prev < 40){//lines on both sides
            State1+=1;
-           w1Prev = w1;
-           w4Prev = w4;
       }
-    
-      if(State1 >=5){//We can change value depending on course. Sate >=5 means we passed rumble strip, and need to look for turn
+      w1Prev = w1;
+      w4Prev = w4;
+      if(State1 >=3){//We can change value depending on course. Sate >=5 means we passed rumble strip, and need to look for turn
            if(w1>450){
                turnLeft();
                State1 = 0;
@@ -157,4 +120,3 @@ void loop() {
       }
             
 }
-
