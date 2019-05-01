@@ -17,8 +17,8 @@ float w4Prev = 0;
 float State1 = 0;
 
 int standardSpd = 80;
-int standardSpdLeft = 80;
-int standardSpdRight = 80;
+int standardSpdLeft = 70;
+int standardSpdRight = 70;
 int speedDiff = 0;
 
 float den;
@@ -61,47 +61,41 @@ void loop() {
      
      float lineDist = numer/den;
 
+     Serial.println(lineDist);
      
-
-     //THE BELOW SERIES OF IF STATEMENTS NEED TO BE ADJUSTED ACCORDINLY TO STANDARD SPEED (Which is 80. we need to decide what speed we will base it off)
-     //THE CURRENT SPEEDS ARE JUST AN EXAMPLE
-     //Example pseudo:
-     /*
-      * if distance is 0.5/-0.5,
-      *     standard wheel speed will be adjusted by 10
-      * else if distance is 1/-1
-      *     standard wheel speed will be adjusted by 20
-      * else if distance is 1.5/-1.5
-      *     standard wheel speed will be adjusted by 30
-      *     
-      * Exmple code below:
-      */
-     //analogWrite(5, StandardSpd + 10);
-     Serial.println(State1);
+    
+     
      speedDiff = lineDist*8;
-
+     if(lineDist>10||lineDist<-10){
+      standardSpd = 50;
+     }
+     else if(lineDist>6||lineDist<-6){
+      standardSpd = 60;
+     }else{
+      standardSpd = 80;
+     }
      if(speedDiff<0){
           speedDiff = -speedDiff;
      }
      if(speedDiff>standardSpd){
           speedDiff = standardSpd;
      }
-    
+     
      if(lineDist>-0.5){//right
-          analogWrite(5, standardSpdLeft + speedDiff);
-          analogWrite(6, standardSpdRight - speedDiff);
+          analogWrite(5, standardSpd + speedDiff);
+          analogWrite(6, standardSpd - speedDiff);
      }
      else if(lineDist<0.5){
-          analogWrite(5, standardSpdLeft - speedDiff);
-          analogWrite(6, standardSpdRight + speedDiff);
+          analogWrite(5, standardSpd - speedDiff);
+          analogWrite(6, standardSpd + speedDiff);
      }
      else{
      
-          analogWrite(5, standardSpdLeft);
-          analogWrite(6, standardSpdRight);
+          analogWrite(5, standardSpd);
+          analogWrite(6, standardSpd);
      }
       
-     if((w1+w4)>75 && w1Prev<40 &&w4Prev < 40){//lines on both sides
+     if((w1+w4)>75 && w1Prev<40 &&w4Prev < -2){//lines on both sides
           State1+=1;
      }
      w1Prev = w1;
