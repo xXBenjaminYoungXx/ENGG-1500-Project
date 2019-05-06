@@ -1,17 +1,16 @@
+#include <SparkFun_APDS9960.h>
 #include <ENGG1500Lib.h>
 #define Left 5
 #define Right 6
 
 #include <Servo.h> //makes the sonar magic happen
-#define ECHO 12
-#define TRIG 7
 #define SERVO A5
 Servo servo;
 int servoAngle = 0; //Servo intial position
-unsigned int SonarL = 100;
-unsigned int SonarF = 100;
-unsigned int SonarR = 100;
-unsigned int SonarFR = 100;
+unsigned int ProximityL = 100;
+unsigned int ProximityF = 100;
+unsigned int ProximityR = 100;
+unsigned int ProximityFR = 100;
 int Approximation = 0;
 int ApproximationConstant = 4;
 
@@ -41,10 +40,8 @@ float numer;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setup() {
-    //sonar pins
-    servo.attach(SERVO); // Sonar motor
-    pinMode(ECHO,INPUT); //set pin 12 as an input
-    pinMode(TRIG,OUTPUT); //set pin 7 as an output
+    //servo pin
+    servo.attach(SERVO); // Servo motor
     Serial.begin(9600);
      
      //IR sensors
@@ -68,38 +65,38 @@ void setup() {
 }
 
 void loop() {
-     for(servoAngle = 0; servoAngle < 90; servoAngle++){  //move the micro servo from 0 degrees to 90 degrees
+     /*for(servoAngle = 0; servoAngle < 90; servoAngle++){  //move the micro servo from 0 degrees to 90 degrees
                                    
     servo.write(servoAngle);              
     switch (servoAngle) {
       case 0:                 //Reading at 0 degrees
-        SonarR = sonar_mm();
+        ProximityR = ;  //
         break;
       case 45:                //Reading at 90 degrees
-        SonarFR = sonar_mm();
+        ProximityFR = ; //
         break;
       case 90:                //Reading at 90 degrees
-        SonarF = sonar_mm();
+        ProximityF = ;  //
         break;
       default:
         break;
     }
     
-    if (SonarF < 15 || SonarFR < 15 || SonarR < 15){
+    if (ProximityF < 15 || ProximityFR < 15 || ProximityR < 15){
       servo.write(180);
-      SonarL = sonar_mm();
+      ProximityL = ;  //
       
-      if (-(ApproximationConstant) < (SonarL - SonarR) && (SonarL - SonarR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
+      if (-(ApproximationConstant) < (ProximityL - ProximityR) && (ProximityL - ProximityR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
         Approximation = 1;
       }
         
-      if (SonarF < SonarR || SonarFR < SonarR){              //If there is something in front but not to the right
+      if (ProximityF < ProximityR || ProximityFR < ProximityR){              //If there is something in front but not to the right
         turnRight();
       }
-      else if (2 * SonarR < SonarL|| 2 * SonarFR < SonarL){  //If there is something to the right but not in front
+      else if (2 * ProximityR < ProximityL|| 2 * ProximityFR < ProximityL){  //If there is something to the right but not in front
         turnLeft();
       }
-      else if (Approximation == 1 && SonarF < 3 * SonarL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
+      else if (Approximation == 1 && ProximityF < 3 * ProximityL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
         //Corridor ();
         Approximation = 0;
       }
@@ -115,33 +112,33 @@ void loop() {
       servo.write(servoAngle);          
       switch (servoAngle) {
         case 0: //Reading at 0 degrees
-          SonarR = sonar_mm();
+          ProximityR = ;  //
           break;
         case 45: //Reading at 45 degrees
-          SonarFR = sonar_mm();
+          ProximityFR = ; //
           break;
         case 90: //Reading at 90 degrees
-          SonarF = sonar_mm();
+          ProximityF = ;  //
           break;
         default:
           break;
       }
       
-      if (SonarF < 15 || SonarFR < 15 || SonarR < 15){
+      if (ProximityF < 15 || ProximityFR < 15 || ProximityR < 15){
         servo.write(180);
-        SonarL = sonar_mm();
+        ProximityL = ;  //
       
-        if (-(ApproximationConstant) < (SonarL - SonarR) && (SonarL - SonarR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
+        if (-(ApproximationConstant) < (ProximityL - ProximityR) && (ProximityL - ProximityR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
           Approximation = 1;
         }
         
-        if (SonarF < SonarR || SonarFR < SonarR){              //If there is something in front but not to the right
+        if (ProximityF < ProximityR || ProximityFR < ProximityR){              //If there is something in front but not to the right
           turnRight();
         }
-        else if (2 * SonarR < SonarL|| 2 * SonarFR < SonarL){  //If there is something to the right but not in front
+        else if (2 * ProximityR < ProximityL|| 2 * ProximityFR < ProximityL){  //If there is something to the right but not in front
           turnLeft();
         }
-        else if (Approximation == 1 && SonarF < 3 * SonarL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
+        else if (Approximation == 1 && ProximityF < 3 * ProximityL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
           //Corridor ();
           Approximation = 0;
         }
@@ -151,5 +148,6 @@ void loop() {
       }
       
       delay(20);      
-  }
+  }*/
+  followLine();
 }
