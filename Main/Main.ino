@@ -1,4 +1,10 @@
-#include <Esplora.h>
+//#include <Esplora.h>
+#include <Wire.h>
+#include <SparkFun_APDS9960.h>
+
+// Global Variables
+SparkFun_APDS9960 apds = SparkFun_APDS9960();
+uint8_t proximity_data = 0;
 
 #include <ENGG1500Lib.h>
 #define Left 5
@@ -40,22 +46,57 @@ int speedDiff = 0;
 
 float den;
 float numer;
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 void setup() {
-    //sonar pins
-    servo.attach(SERVO); // Sonar motor
-    pinMode(ECHO,INPUT); //set pin 12 as an input
-    pinMode(TRIG,OUTPUT); //set pin 7 as an output
-    Serial.begin(9600);
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//*****RGB SETUP********//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // Initialize Serial port
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println(F("------------------------------------"));
+  Serial.println(F("SparkFun APDS-9960 - ProximitySensor"));
+  Serial.println(F("------------------------------------"));
+  
+  // Initialize APDS-9960 (configure I2C and initial values)
+  if ( apds.init() ) {
+    Serial.println(F("APDS-9960 initialization complete"));
+  } else {
+    Serial.println(F("Something went wrong during APDS-9960 init!"));
+  }
+  
+  // Adjust the Proximity sensor gain
+  if ( !apds.setProximityGain(PGAIN_2X) ) {
+    Serial.println(F("Something went wrong trying to set PGAIN"));
+  }
+  
+  // Start running the APDS-9960 proximity sensor (no interrupts)
+  if ( apds.enableProximitySensor(false) ) {
+    Serial.println(F("Proximity sensor is now running"));
+  } else {
+    Serial.println(F("Something went wrong during sensor init!"));
+  }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//***********SERVO SETUP**************//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
      
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//***********IR SENSOR SETUP**************//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
      //IR sensors
      pinMode(A0, INPUT);//IR front
      pinMode(A1, INPUT);//IR front
      pinMode(A2, INPUT);//IR front
      pinMode(A3, INPUT);//IR front
-     //Unknown
-     pinMode(4, INPUT);//IR sensor right
+     
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//***********MOTOR SETUP**************//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     
      //Motor Speeds
      pinMode(5,OUTPUT); //set ENA as an output
      pinMode(6,OUTPUT); //set ENB as an output
@@ -65,10 +106,15 @@ void setup() {
      pinMode(10,OUTPUT); //set IN3 as an output
      pinMode(11,OUTPUT); //set IN4 as an output
      
-     Serial.begin(115200);
      delay(5000);
 }
 
 void loop() {
+    if ( !apds.readProximity(proximity_data) ) {
+    Serial.println("Error reading proximity value");
+  } else {
+    //Serial.print("Proximity: ");
+    //Serial.println(proximity_data);
+  }
     followLine();
 }

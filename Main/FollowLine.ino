@@ -6,13 +6,13 @@ void followLine(){
      w2 = analogRead(A1);
      w3 = analogRead(A2);
      w4 = analogRead(A3);
-   
+
+     Serial.println(w1);
+    
      numer=w1*x1+w2*x2+w3*x3+w4*x4;
      den=w1+w2+w3+w4;
      
      float lineDist = numer/den;
-
-     Serial.println(lineDist);
      
      
      speedDiff = lineDist*8;
