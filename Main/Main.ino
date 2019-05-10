@@ -1,16 +1,19 @@
-#include <SparkFun_APDS9960.h>
+#include <Esplora.h>
+
 #include <ENGG1500Lib.h>
 #define Left 5
 #define Right 6
 
 #include <Servo.h> //makes the sonar magic happen
+#define ECHO 12
+#define TRIG 7
 #define SERVO A5
 Servo servo;
 int servoAngle = 0; //Servo intial position
-unsigned int ProximityL = 100;
-unsigned int ProximityF = 100;
-unsigned int ProximityR = 100;
-unsigned int ProximityFR = 100;
+unsigned int SonarL = 100;
+unsigned int SonarF = 100;
+unsigned int SonarR = 100;
+unsigned int SonarFR = 100;
 int Approximation = 0;
 int ApproximationConstant = 4;
 
@@ -40,8 +43,10 @@ float numer;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void setup() {
-    //servo pin
-    servo.attach(SERVO); // Servo motor
+    //sonar pins
+    servo.attach(SERVO); // Sonar motor
+    pinMode(ECHO,INPUT); //set pin 12 as an input
+    pinMode(TRIG,OUTPUT); //set pin 7 as an output
     Serial.begin(9600);
      
      //IR sensors
@@ -65,89 +70,5 @@ void setup() {
 }
 
 void loop() {
-     /*for(servoAngle = 0; servoAngle < 90; servoAngle++){  //move the micro servo from 0 degrees to 90 degrees
-                                   
-    servo.write(servoAngle);              
-    switch (servoAngle) {
-      case 0:                 //Reading at 0 degrees
-        ProximityR = ;  //
-        break;
-      case 45:                //Reading at 90 degrees
-        ProximityFR = ; //
-        break;
-      case 90:                //Reading at 90 degrees
-        ProximityF = ;  //
-        break;
-      default:
-        break;
-    }
-    
-    if (ProximityF < 15 || ProximityFR < 15 || ProximityR < 15){
-      servo.write(180);
-      ProximityL = ;  //
-      
-      if (-(ApproximationConstant) < (ProximityL - ProximityR) && (ProximityL - ProximityR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
-        Approximation = 1;
-      }
-        
-      if (ProximityF < ProximityR || ProximityFR < ProximityR){              //If there is something in front but not to the right
-        turnRight();
-      }
-      else if (2 * ProximityR < ProximityL|| 2 * ProximityFR < ProximityL){  //If there is something to the right but not in front
-        turnLeft();
-      }
-      else if (Approximation == 1 && ProximityF < 3 * ProximityL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
-        //Corridor ();
-        Approximation = 0;
-      }
-    }
-    else {
-      followLine();
-    }
-    delay(20);                  
-  }
-
-  for(servoAngle = 90; servoAngle > 0; servoAngle--){  //now move back the micro servo from 90 degrees to 0 degrees
-                                    
-      servo.write(servoAngle);          
-      switch (servoAngle) {
-        case 0: //Reading at 0 degrees
-          ProximityR = ;  //
-          break;
-        case 45: //Reading at 45 degrees
-          ProximityFR = ; //
-          break;
-        case 90: //Reading at 90 degrees
-          ProximityF = ;  //
-          break;
-        default:
-          break;
-      }
-      
-      if (ProximityF < 15 || ProximityFR < 15 || ProximityR < 15){
-        servo.write(180);
-        ProximityL = ;  //
-      
-        if (-(ApproximationConstant) < (ProximityL - ProximityR) && (ProximityL - ProximityR) < ApproximationConstant){   //This checks to see if Left and Right are approximately equal 
-          Approximation = 1;
-        }
-        
-        if (ProximityF < ProximityR || ProximityFR < ProximityR){              //If there is something in front but not to the right
-          turnRight();
-        }
-        else if (2 * ProximityR < ProximityL|| 2 * ProximityFR < ProximityL){  //If there is something to the right but not in front
-          turnLeft();
-        }
-        else if (Approximation == 1 && ProximityF < 3 * ProximityL){   //If there is nothing in front but there is stuff to the left and right at roughly equal distances
-          //Corridor ();
-          Approximation = 0;
-        }
-      }
-      else {
-        followLine();
-      }
-      
-      delay(20);      
-  }*/
-  followLine();
+    followLine();
 }
