@@ -30,4 +30,8 @@ void rightForwards(void)
     digitalWrite(11,HIGH); //IN3
     digitalWrite(12,LOW); //IN4
 }
-
+void Stop(void) 
+{
+    analogWrite(5,0); //Left
+    analogWrite(6,0); //Right
+}
