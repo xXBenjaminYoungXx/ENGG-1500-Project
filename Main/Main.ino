@@ -12,6 +12,10 @@
 
 #define SERVO 10
 Servo servo;
+int servoAngle = 0; //Servo intial position
+int Time;
+int Approximation = 0;
+int ApproximationConstant = 4;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********RGB variables**************//
@@ -74,9 +78,6 @@ void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     servo.attach(SERVO);
-    int servoAngle = 0; //Servo intial position
-    int Approximation = 0;
-    int ApproximationConstant = 4;
      
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********IR SENSOR SETUP**************//
@@ -110,10 +111,33 @@ void loop() {
     }
     
     while (State == 1){
-      followLine();
-      if (proximity_data > 240){
+      for (servoAngle = 0; servoAngle < 90; servoAngle ++){
+        servo.write(servoAngle);
+        followLine();
+      }
+      for (Time = 0; Time < 185; Time ++){
+        followLine();
+        delay(1);
+      }
+      
+      
+      
+
+    
+      for (servoAngle = 90; servoAngle > 0; servoAngle --){
+        servo.write(servoAngle);
+        followLine();
+      }
+      for (Time = 0; Time < 185; Time ++){
+        followLine();
+        delay(1);
+      }
+      
+      //followLine();
+      //delay(370);
+      /*if (proximity_data > 240){
         State = 0;
-      }     
+      }*/     
     }
     
     Stop();

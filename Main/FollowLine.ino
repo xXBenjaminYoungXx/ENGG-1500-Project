@@ -27,7 +27,7 @@ void followLine(){
      speedDiff = lineDist*8;
      
      if(lineDist>10||lineDist<-10){
-      standardSpd = 55;
+      standardSpd = 50;
      }
      else if(lineDist>6||lineDist<-6){
       standardSpd = 60;
