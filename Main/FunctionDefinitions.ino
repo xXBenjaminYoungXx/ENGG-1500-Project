@@ -53,14 +53,13 @@ void Halt(void)
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
 }
-void Stop(void) 
+void Stop(void)
 {
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
     State = 0;
 }
-void Light (void)
-{
+void Light (void){
   if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
       Serial.println("Error reading light values");
   }
@@ -74,8 +73,7 @@ void Light (void)
     followLine();
   }
 }
-void Garage(void)
-{
+void Garage(void){
    Halt();
    servo.write(90);
    delay(185);
@@ -83,8 +81,7 @@ void Garage(void)
    analogWrite(5,70);
    analogWrite(6,70);
 
-   if ( !apds.readProximity(proximity_data) ) 
-   {
+   if (!apds.readProximity(proximity_data)){
      Serial.println("Error reading proximity value");
    }
  
@@ -92,4 +89,11 @@ void Garage(void)
   {
      Stop();
   }
+}
+void Corridor (void){
+  analogWrite(5, LPWM);
+  analogWrite(6, RPWM);
+  ProxL = 30;
+  ProxR = 30;
+  delay (3000);
 }

@@ -48,7 +48,8 @@ int speedDiff = 0;
 int State = 1;
 float den;
 float numer;
-
+const int LPWM = 82;
+const int RPWM = 85;
 
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -140,7 +141,7 @@ void loop() {
                 Garage();
               }
               else if (ProxL > 120){
-                //Corridor();
+                Corridor();
               }
               else {
                 turnLeft();
@@ -195,7 +196,7 @@ void loop() {
                         Garage();
                     }
                     else if (ProxL > 120){
-                        //Corridor();
+                        Corridor();
                     }
                     else {
                         turnLeft();
