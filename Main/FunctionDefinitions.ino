@@ -74,6 +74,7 @@ void Light (void){
   }
 }
 void Garage(void){
+   Serial.println("Garage");
    Halt();
    servo.write(90);
    delay(185);
@@ -91,9 +92,10 @@ void Garage(void){
   }
 }
 void Corridor (void){
+  Serial.println("Corridor");
   analogWrite(5, LPWM);
   analogWrite(6, RPWM);
   ProxL = 30;
   ProxR = 30;
-  delay (10000);
+  delay (1000);
 }

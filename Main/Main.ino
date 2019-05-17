@@ -49,7 +49,7 @@ int State = 1;
 float den;
 float numer;
 const int LPWM = 82;
-const int RPWM = 86;
+const int RPWM = 87;
 
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -127,8 +127,15 @@ void loop() {
       
       for (servoAngle = 0; servoAngle < 90; servoAngle ++){
         servo.write(servoAngle);
+        Serial.print("ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("ProxR: ");
+        Serial.println(ProxL);
         switch (servoAngle) {
           case 0:                 //Reading at 0 degrees
+            delay(150);
             ProxR = proximity_data;
 
             if (ProxR > 120){
@@ -152,6 +159,7 @@ void loop() {
             
             break;
           case 90:                //Reading at 90 degrees
+            delay(150);
             ProxF = proximity_data;
             
             if (ProxF > 190){
@@ -182,8 +190,15 @@ void loop() {
     
       for (servoAngle = 90; servoAngle > 0; servoAngle --){
         servo.write(servoAngle);
+        Serial.print("ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("ProxR: ");
+        Serial.println(ProxL);
         switch (servoAngle) {
             case 0:                 //Reading at 0 degrees
+                delay(150);                
                 ProxR = proximity_data;
 
                 if (ProxR > 120){
@@ -205,6 +220,7 @@ void loop() {
                 }
                 break;
             case 90:                //Reading at 90 degrees
+                delay (150);
                 ProxF = proximity_data;
             
                 if (ProxF > 190){
