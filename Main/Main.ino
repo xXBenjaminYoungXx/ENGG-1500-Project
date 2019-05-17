@@ -15,8 +15,9 @@
 Servo servo;
 int servoAngle = 0; //Servo intial position
 int Time;
-int Approximation = 0;
-int ApproximationConstant = 4;
+uint8_t ProxF = 30;
+uint8_t ProxL = 30;
+uint8_t ProxR = 30;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********RGB variables**************//
@@ -24,7 +25,10 @@ int ApproximationConstant = 4;
 
 SparkFun_APDS9960 apds = SparkFun_APDS9960();
 uint8_t proximity_data = 0;
-
+uint16_t ambient_light = 0;
+uint16_t red_light = 0;
+uint16_t green_light = 0;
+uint16_t blue_light = 0;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********IR reading variables**************//
@@ -45,7 +49,7 @@ int State = 1;
 float den;
 float numer;
 
-unit16_t red_light =0;
+
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********RGB SETUP**************//
@@ -73,6 +77,13 @@ void setup() {
       Serial.println(F("Proximity sensor is now running"));
     } else {
       Serial.println(F("Something went wrong during sensor init!"));
+    }
+
+    // Start running the APDS-9960 light sensor (no interrupts)
+    if ( apds.enableLightSensor(false) ) {
+      Serial.println(F("Light sensor is now running"));
+    } else {
+      Serial.println(F("Something went wrong during light sensor init!"));
     }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********SERVO SETUP**************//
@@ -107,31 +118,60 @@ void setup() {
 }
 
 void loop() {
-   if(!apds.readRedLight(red_light)>500){
-      digitalWrite(5,LOW);
-      digitalWrite(6,LOW);
-    }
-    
-    if ( !apds.readProximity(proximity_data) ) {
+  if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
-    }
-
-    if(proximity_data > 200){
-      State = 0;
-      Stop();
-      servo.write(0);
-    }
-
-    else{
-      State = 1;
-    }
-    
-    if (State == 1){
+  }
+  
+  if (State == 1){
       
       for (servoAngle = 0; servoAngle < 90; servoAngle ++){
         servo.write(servoAngle);
+        switch (servoAngle) {
+          case 0:                 //Reading at 0 degrees
+            ProxR = proximity_data;
+
+            if (ProxR > 120){
+              Halt();
+              servo.write(180);
+              delay (380);
+              ProxL = proximity_data;
+
+              if (ProxL > 180){
+                Garage();
+              }
+              else if (ProxL > 120){
+                //Corridor();
+              }
+              else {
+                turnLeft();
+                ProxR = 30;
+              }
+              
+            }
+            
+            break;
+          case 90:                //Reading at 90 degrees
+            ProxF = proximity_data;
+            
+            if (ProxF > 190){
+              Halt();
+              servo.write(0);
+              delay (380);
+              ProxR = proximity_data;
+
+              if (ProxR > 180){
+                Garage();
+              }
+              else {
+                turnRight();
+                ProxF = 30;
+              }
+            }
+            break;
+          default:
+            break;
+        }
         followLine();
-        delay(1);
       }
       
       for (Time = 0; Time < 185; Time ++){
@@ -141,13 +181,55 @@ void loop() {
     
       for (servoAngle = 90; servoAngle > 0; servoAngle --){
         servo.write(servoAngle);
+        switch (servoAngle) {
+            case 0:                 //Reading at 0 degrees
+                ProxR = proximity_data;
+
+                if (ProxR > 120){
+                    Halt();
+                    servo.write(180);
+                    delay (380);
+                    ProxL = proximity_data;
+
+                    if (ProxL > 180){
+                        Garage();
+                    }
+                    else if (ProxL > 120){
+                        //Corridor();
+                    }
+                    else {
+                        turnLeft();
+                        ProxR = 30;
+                    }
+                }
+                break;
+            case 90:                //Reading at 90 degrees
+                ProxF = proximity_data;
+            
+                if (ProxF > 190){
+                    Halt();
+                    servo.write(0);
+                    delay (380);
+                    ProxR = proximity_data;
+
+                    if (ProxR > 180){
+                        Garage();
+                    }
+                    else {
+                        turnRight();
+                        ProxF = 30;
+                    }
+                }
+                break;
+          default:
+              break;
+        }
         followLine();
-        delay(1);
       }
-      
+            
       for (Time = 0; Time < 185; Time ++){
-        followLine();
-        delay(1);
+          followLine();
+          delay(1);
       } 
-    }
+  }
 }

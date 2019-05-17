@@ -25,7 +25,13 @@ void followLine(){
      
      
      speedDiff = lineDist*8;
-     
+
+    /* if(w4 > 370){
+        turnLeft();
+     }
+     else if(w1 > 370){
+       turnRight();
+     }*/
      if(lineDist>10||lineDist<-10){
       standardSpd = 50;
      }
