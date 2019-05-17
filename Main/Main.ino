@@ -109,36 +109,39 @@ void loop() {
     if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
     }
+
+    if(proximity_data > 200){
+      State = 0;
+      Stop();
+      servo.write(0);
+    }
+
+    else{
+      State = 1;
+    }
     
-    while (State == 1){
+    if (State == 1){
+      
       for (servoAngle = 0; servoAngle < 90; servoAngle ++){
         servo.write(servoAngle);
-        followLine();
-      }
-      for (Time = 0; Time < 185; Time ++){
         followLine();
         delay(1);
       }
       
-      
-      
-
+      for (Time = 0; Time < 185; Time ++){
+        followLine();
+        delay(1);
+      }
     
       for (servoAngle = 90; servoAngle > 0; servoAngle --){
         servo.write(servoAngle);
         followLine();
-      }
-      for (Time = 0; Time < 185; Time ++){
-        followLine();
         delay(1);
       }
       
-      //followLine();
-      //delay(370);
-      /*if (proximity_data > 240){
-        State = 0;
-      }*/     
+      for (Time = 0; Time < 185; Time ++){
+        followLine();
+        delay(1);
+      } 
     }
-    
-    Stop();
 }
