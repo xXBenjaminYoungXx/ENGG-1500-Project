@@ -5,6 +5,7 @@
 #include <SparkFun_APDS9960.h>//RGB sensor
 #include <ENGG1500Lib.h>//Encoder stuff
 #include <Servo.h> //makes the sonar magic happen
+#include <Wire.h>
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********Servo variables**************//
@@ -44,7 +45,7 @@ int State = 1;
 float den;
 float numer;
 
-
+unit16_t red_light =0;
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********RGB SETUP**************//
@@ -106,6 +107,11 @@ void setup() {
 }
 
 void loop() {
+   if(!apds.readRedLight(red_light)>500){
+      digitalWrite(5,LOW);
+      digitalWrite(6,LOW);
+    }
+    
     if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
     }
