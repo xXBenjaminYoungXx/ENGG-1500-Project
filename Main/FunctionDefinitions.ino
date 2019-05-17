@@ -95,5 +95,5 @@ void Corridor (void){
   analogWrite(6, RPWM);
   ProxL = 30;
   ProxR = 30;
-  delay (3000);
+  delay (10000);
 }
