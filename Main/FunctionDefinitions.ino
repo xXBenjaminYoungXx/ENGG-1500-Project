@@ -99,3 +99,15 @@ void Corridor (void){
   ProxR = 30;
   delay (1000);
 }
+void pedestrian (void){
+       if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
+      Serial.println("Error reading light values");
+  }
+  if((blue_light + green_light)>450)
+  {
+      digitalWrite(5,LOW);
+      digitalWrite(6,LOW);
+   }
+  else 
+    followLine();
+}
