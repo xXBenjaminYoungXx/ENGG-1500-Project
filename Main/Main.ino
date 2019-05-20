@@ -49,7 +49,7 @@ int State = 1;
 float den;
 float numer;
 const int LPWM = 82;
-const int RPWM = 87;
+const int RPWM = 85;
 
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,122 +125,79 @@ void loop() {
   
   if (State == 1){
       
-      for (servoAngle = 0; servoAngle < 90; servoAngle ++){
+      for (servoAngle = 0; servoAngle < 91; servoAngle ++){
         servo.write(servoAngle);
-        Serial.print("ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("ProxR: ");
-        Serial.println(ProxL);
+        
         switch (servoAngle) {
           case 0:                 //Reading at 0 degrees
-            delay(150);
-            ProxR = proximity_data;
-
-            if (ProxR > 120){
-              Halt();
-              servo.write(180);
-              delay (380);
-              ProxL = proximity_data;
-
-              if (ProxL > 180){
-                Garage();
-              }
-              else if (ProxL > 120){
-                Corridor();
-              }
-              else {
-                turnLeft();
-                ProxR = 30;
-              }
-              
-            }
+            apds.readProximity(proximity_data);
+            ProxR = proximity_data;            
             
+                    Serial.print("1ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("1ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("1ProxR: ");
+        Serial.println(ProxR);
             break;
           case 90:                //Reading at 90 degrees
-            delay(150);
+            apds.readProximity(proximity_data);
             ProxF = proximity_data;
             
-            if (ProxF > 190){
-              Halt();
-              servo.write(0);
-              delay (380);
-              ProxR = proximity_data;
-
-              if (ProxR > 180){
-                Garage();
-              }
-              else {
-                turnRight();
-                ProxF = 30;
-              }
-            }
+                    Serial.print("1ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("1ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("1ProxR: ");
+        Serial.println(ProxR);
             break;
           default:
             break;
         }
-        followLine();
+
+      StateMachine();
+        
+      followLine();
       }
+
       
       for (Time = 0; Time < 185; Time ++){
         followLine();
         delay(1);
       }
     
-      for (servoAngle = 90; servoAngle > 0; servoAngle --){
+      for (servoAngle = 90; servoAngle > -1; servoAngle --){
         servo.write(servoAngle);
-        Serial.print("ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("ProxR: ");
-        Serial.println(ProxL);
+        
         switch (servoAngle) {
             case 0:                 //Reading at 0 degrees
-                delay(150);                
+                apds.readProximity(proximity_data);                
                 ProxR = proximity_data;
 
-                if (ProxR > 120){
-                    Halt();
-                    servo.write(180);
-                    delay (380);
-                    ProxL = proximity_data;
 
-                    if (ProxL > 180){
-                        Garage();
-                    }
-                    else if (ProxL > 120){
-                        Corridor();
-                    }
-                    else {
-                        turnLeft();
-                        ProxR = 30;
-                    }
-                }
+                        Serial.print("2ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("2ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("2ProxR: ");
+        Serial.println(ProxR);
                 break;
             case 90:                //Reading at 90 degrees
-                delay (150);
+                apds.readProximity(proximity_data);
                 ProxF = proximity_data;
-            
-                if (ProxF > 190){
-                    Halt();
-                    servo.write(0);
-                    delay (380);
-                    ProxR = proximity_data;
 
-                    if (ProxR > 180){
-                        Garage();
-                    }
-                    else {
-                        turnRight();
-                        ProxF = 30;
-                    }
-                }
+
+                        Serial.print("2ProxL: ");
+        Serial.println(ProxL);
+        Serial.print("2ProxF: ");
+        Serial.println(ProxF);
+        Serial.print("2ProxR: ");
+        Serial.println(ProxR);
                 break;
           default:
               break;
         }
+        StateMachine();
         followLine();
       }
             
@@ -248,5 +205,5 @@ void loop() {
           followLine();
           delay(1);
       } 
-  }
+  } 
 }

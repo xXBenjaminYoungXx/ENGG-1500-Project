@@ -16,6 +16,11 @@ void turnLeft(void){
 void turnRight(void){
      Stop();
      delay(1000);
+     leftBackwards();
+     rightBackwards();
+     analogWrite(5, 170);
+     analogWrite(6, 170);
+     delay(200);
      leftForwards();
      rightBackwards();
      analogWrite(5, 170);
@@ -68,7 +73,8 @@ void Light (void){
       digitalWrite(5,LOW);
       digitalWrite(6,LOW);
     }
-  else
+  else if(green_light > 500){
+    delay (500);
     followLine();
   }
 }
@@ -98,15 +104,38 @@ void Corridor (void){
   ProxR = 30;
   delay (1000);
 }
-void pedestrian (void){
-       if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
-      Serial.println("Error reading light values");
-  }
-  if((blue_light + green_light)>450)
-  {
-      digitalWrite(5,LOW);
-      digitalWrite(6,LOW);
-   }
-  else 
-    followLine();
+void StateMachine (void){
+        if (ProxR > 120){
+              Halt();
+              servo.write(180);
+              delay (380);
+              apds.readProximity(proximity_data);
+              ProxL = proximity_data;
+              if (ProxL > 180){
+                Garage();
+              }
+              else if (ProxL > 120){
+                Corridor();
+              }
+              else {
+                turnLeft();
+                ProxR = 30;
+              } 
+            }
+       
+      if (ProxF > 190){
+              Halt();
+              servo.write(0);
+              delay (380);
+              apds.readProximity(proximity_data);
+              ProxR = proximity_data;
+              if (ProxR > 180){
+                Garage();
+              }
+              else {
+                turnRight();
+                ProxF = 30;
+              }
+      }
 }
+
