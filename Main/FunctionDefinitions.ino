@@ -79,15 +79,20 @@ void Light (void){
 }
 //-------------------------------
 void wall(void){
-  if(w1Prev > 300 && itteration = 0){
+  if((w1Prev > 300) && (itteration = 0)){
     turnLeft();
+    itteration = 1;
+    analogWrite(5,70);
+    analogWrite(6,70);
+    return;
   }
-  if(w4Prev > 300 && itteration = 0){
+  if((w4Prev > 300) && (itteration = 0)){
     turnRight();
+    itteration = 1;
+    analogWrite(5,70);
+    analogWrite(6,70);
+    return;
   }
-  
-  itteration = 1;
-  
   analogWrite(5,70);
   analogWrite(6,70);
 
