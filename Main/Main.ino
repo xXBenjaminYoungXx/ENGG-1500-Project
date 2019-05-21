@@ -138,6 +138,7 @@ void setup() {
 }
 
 void loop() {
+  Serial.println(State);
   //Read Data For all variables
   if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
