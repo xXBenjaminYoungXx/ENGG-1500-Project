@@ -178,7 +178,7 @@ void loop() {
   }
 
   if(State = 2){
-    //Wall code, say when a line is detected state becomes one
+    wall();
   }
 
   if(State = 3){
