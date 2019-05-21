@@ -71,19 +71,11 @@ void Stop(void)
 }
 //-------------------------------
 void Light (void){
-  if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
-      Serial.println("Error reading light values");
-  }
-  
-  if(red_light >500){
-      digitalWrite(5,LOW);
-      digitalWrite(6,LOW);
-    }
-  else if(green_light > 500){
+  Halt();
+  if(green_light < 150){
     delay (500);
-    followLine();
+    State = 1;
   }
-return;
 }
 //-------------------------------
 void wall(void){

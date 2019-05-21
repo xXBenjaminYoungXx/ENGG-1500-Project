@@ -66,6 +66,7 @@ short itteration = 0;
  * 3: Hallway
  * 4: Gararge
  * 5: Scan
+ * 6: RGB take over
  */
 
 void setup() {
@@ -141,6 +142,9 @@ void loop() {
   if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
   }
+  if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
+      Serial.println("Error reading light values");
+  }
   
   //This step was removed from follow line and is used here instead
   w1 = analogRead(A0);
@@ -161,12 +165,12 @@ void loop() {
     
      time_ = millis();
      if(time_ + 1000 < millis()){//Second has passed 
-          State = 5;//We need to scan
+          State = 6;//We need to scan
       }
   }
 
   if(proximity_data > 150 && State != 0){//Wall is seen need to scan
-      State = 5;
+      State = 6;
   }
 
   if(State == 0){
@@ -188,8 +192,10 @@ void loop() {
   if(State = 4){
     Garage();//wen proxf becomes 225 state permenatly becomes 0
   }
-
-  if(State = 5){//Scan
+  if(State = 5){
+    Light();
+  }
+  if(State = 6){//Scan
         Halt();
         
         servo.write(0);
@@ -225,8 +231,11 @@ void loop() {
         else if(ProxF < 150 && ProxR < 150 && ProxL < 150){//We are on a white part of track, hopefully this never occurs
           State = 1;
         }
+        else if(green_light > 160){
+          State = 5;
+        }
         else{//I have left the possibility of Frount < 150 and left or right > 150, as there is no situation which this should happen. So the robot will stop.
-          State = 6;//This can be tweeked and should be removed before D-day, e.g make State = 1; as defult
+          State = 7;//This can be tweeked and should be removed before D-day, e.g make State = 1; as defult
         }
       }
 }
