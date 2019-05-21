@@ -90,25 +90,20 @@ void Garage(void){
    Serial.println("Garage");
    Halt();
    servo.write(90);
-   delay(185);
  
    analogWrite(5,70);
    analogWrite(6,70);
-
-   if (!apds.readProximity(proximity_data)){
-     Serial.println("Error reading proximity value");
-   }
  
-  if(proximity_data > 240)
-  {
+   if(proximity_data > 240)
+   {
      Stop();
-  }
-return;
+   }
 }
 //-------------------------------
 void Corridor (void){
   if(itteration == 0){
     enc_clear();
+    itteration+=1;
   }
   Serial.println("Corridor");
   
@@ -123,6 +118,7 @@ void Corridor (void){
 
   if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
       State = 1;
+      itteration = 0;
   }
 }
 //-------------------------------
