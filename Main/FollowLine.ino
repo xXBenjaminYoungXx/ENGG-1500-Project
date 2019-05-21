@@ -1,11 +1,6 @@
 void followLine(){
      leftForwards();
      rightForwards(); 
-     
-     w1 = analogRead(A0);
-     w2 = analogRead(A1);
-     w3 = analogRead(A2);
-     w4 = analogRead(A3);
 
      // Serial.println(w1);
      // Serial.println(w2);

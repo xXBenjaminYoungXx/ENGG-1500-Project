@@ -57,12 +57,14 @@ void Halt(void)
 {
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
+    return;
 }
 void Stop(void)
 {
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
     State = 0;
+    return;
 }
 void Light (void){
   if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
@@ -77,6 +79,7 @@ void Light (void){
     delay (500);
     followLine();
   }
+return;
 }
 void Garage(void){
    Serial.println("Garage");
@@ -95,6 +98,7 @@ void Garage(void){
   {
      Stop();
   }
+return;
 }
 void Corridor (void){
   Serial.println("Corridor");
@@ -103,6 +107,7 @@ void Corridor (void){
   ProxL = 30;
   ProxR = 30;
   delay (1000);
+  return;
 }
 void StateMachine (void){
         if (ProxR > 120){
@@ -123,7 +128,7 @@ void StateMachine (void){
               } 
             }
        
-      if (ProxF > 190){
+      if (ProxF > 120){
               Halt();
               servo.write(0);
               delay (380);
@@ -137,5 +142,6 @@ void StateMachine (void){
                 ProxF = 30;
               }
       }
+return;      
 }
 

@@ -45,11 +45,24 @@ float w4;
 
 int standardSpd = 70;
 int speedDiff = 0;
-int State = 1;
+
 float den;
 float numer;
 const int LPWM = 82;
 const int RPWM = 85;
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//***********State machiene variables**************//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int State = 1;
+unsigned int time_ = 0;
+/*
+ * 0: End
+ * 1: Follow line
+ * 2: Dead End
+ * 3: Hallway
+ * 4: Gararge
+ * 5: Scan
+ */
 
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -91,6 +104,7 @@ void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     servo.attach(SERVO);
+    servo.write(90);
      
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********IR SENSOR SETUP**************//
@@ -123,87 +137,78 @@ void loop() {
     Serial.println("Error reading proximity value");
   }
   
-  if (State == 1){
-      
-      for (servoAngle = 0; servoAngle < 91; servoAngle ++){
-        servo.write(servoAngle);
-        
-        switch (servoAngle) {
-          case 0:                 //Reading at 0 degrees
-            apds.readProximity(proximity_data);
-            ProxR = proximity_data;            
-            
-                    Serial.print("1ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("1ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("1ProxR: ");
-        Serial.println(ProxR);
-            break;
-          case 90:                //Reading at 90 degrees
-            apds.readProximity(proximity_data);
-            ProxF = proximity_data;
-            
-                    Serial.print("1ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("1ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("1ProxR: ");
-        Serial.println(ProxR);
-            break;
-          default:
-            break;
-        }
+  w1 = analogRead(A0);
+  w2 = analogRead(A1);
+  w3 = analogRead(A2);
+  w4 = analogRead(A3);
 
-      StateMachine();
-        
-      followLine();
-      }
-
-      
-      for (Time = 0; Time < 185; Time ++){
-        followLine();
-        delay(1);
-      }
+  if((w1 <50 && w2 < 50 && w3 <50 && w4 < 50) && State != 0) {//We are on white, but we could just be on small gap, so wait a second to see if this is still the case
     
-      for (servoAngle = 90; servoAngle > -1; servoAngle --){
-        servo.write(servoAngle);
-        
-        switch (servoAngle) {
-            case 0:                 //Reading at 0 degrees
-                apds.readProximity(proximity_data);                
-                ProxR = proximity_data;
-
-
-                        Serial.print("2ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("2ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("2ProxR: ");
-        Serial.println(ProxR);
-                break;
-            case 90:                //Reading at 90 degrees
-                apds.readProximity(proximity_data);
-                ProxF = proximity_data;
-
-
-                        Serial.print("2ProxL: ");
-        Serial.println(ProxL);
-        Serial.print("2ProxF: ");
-        Serial.println(ProxF);
-        Serial.print("2ProxR: ");
-        Serial.println(ProxR);
-                break;
-          default:
-              break;
-        }
-        StateMachine();
-        followLine();
+     time_ = millis();
+     if(time_ + 1000 < millis()){//Second has passed 
+          State = 5;
       }
-            
-      for (Time = 0; Time < 185; Time ++){
-          followLine();
-          delay(1);
-      } 
-  } 
+  }
+
+  if(proximity_data > 150 && State != 0){//Wall is seen need to scan
+      State = 5;
+  }
+
+  if(State == 0){
+     Stop();
+  }
+  
+  if(State == 1){//Follow line and scan
+    followLine();
+  }
+
+  if(State = 2){
+    //Wall code
+  }
+
+  if(State = 3){
+    Corridor();
+  }
+
+  if(State = 4){
+    Garage();
+  }
+
+  if(State = 5){//Scan
+        Halt();
+        
+        servo.write(0);
+        delay(200);
+        apds.readProximity(proximity_data);
+        ProxR = proximity_data;
+    
+        servo.write(90);
+        delay(200);
+        apds.readProximity(proximity_data);
+        ProxF = proximity_data;
+    
+        servo.write(180);
+        delay(200);
+        apds.readProximity(proximity_data);
+        ProxL = proximity_data;
+    
+        servo.write(90);
+    
+        //Now to see what to do with results
+        if(ProxF > 150 && ProxR <150 && ProxL < 150){//We are at dead end
+          State = 2;
+        }
+    
+        else if(ProxF < 150 && ProxR > 150 && ProxL > 150){//We are at coridor, converging / diverging
+          State = 3;
+        }
+    
+        else if(ProxF > 150 && ProxR > 150 && ProxL > 150){//We are at gararge
+          State = 4;
+        }
+    
+        else if(ProxF < 150 && ProxR < 150 && ProxL < 150){//We are on a white part of track, hopefully this never occurs
+          State = 1;
+        }
+      }
 }
