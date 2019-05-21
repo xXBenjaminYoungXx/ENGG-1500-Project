@@ -86,6 +86,22 @@ void Light (void){
 return;
 }
 //-------------------------------
+void wall(void){
+  if(w1Prev > 300){
+    turnLeft();
+  }
+  if(w4Prev > 300){
+    turnRight();
+  }
+
+  analogWrite(5,70);
+  analogWrite(6,70);
+
+  if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
+      State = 1;
+  }
+}
+//-------------------------------
 void Garage(void){
    Serial.println("Garage");
    Halt();
