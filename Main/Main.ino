@@ -133,10 +133,12 @@ void setup() {
 }
 
 void loop() {
+  //Read Data For all variables
   if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
   }
   
+  //This step was removed from follow line and is used here instead
   w1 = analogRead(A0);
   w2 = analogRead(A1);
   w3 = analogRead(A2);
@@ -146,7 +148,7 @@ void loop() {
     
      time_ = millis();
      if(time_ + 1000 < millis()){//Second has passed 
-          State = 5;
+          State = 5;//We need to scan
       }
   }
 
@@ -163,15 +165,15 @@ void loop() {
   }
 
   if(State = 2){
-    //Wall code
+    //Wall code, say when a line is detected state becomes one
   }
 
   if(State = 3){
-    Corridor();
+    Corridor();//When line is detected state becomes one
   }
 
   if(State = 4){
-    Garage();
+    Garage();//wen proxf becomes 225 state permenatly becomes 0
   }
 
   if(State = 5){//Scan
@@ -209,6 +211,9 @@ void loop() {
     
         else if(ProxF < 150 && ProxR < 150 && ProxL < 150){//We are on a white part of track, hopefully this never occurs
           State = 1;
+        }
+        else{//I have left the possibility of Frount < 150 and left or right > 150, as there is no situation which this should happen. So the robot will stop.
+          State = 6;//This can be tweeked and should be removed before D-day, e.g make State = 1; as defult
         }
       }
 }
