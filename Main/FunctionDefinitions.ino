@@ -1,3 +1,4 @@
+//-------------------------------
 void turnLeft(void){
      Stop();
      delay(1000);
@@ -33,6 +34,7 @@ void turnRight(void){
      delay(500);
      return;
 }
+//-------------------------------
 void leftBackwards(void) 
 {
     digitalWrite(8,LOW); //IN1
@@ -53,6 +55,7 @@ void rightForwards(void)
     digitalWrite(11,HIGH); //IN3
     digitalWrite(12,LOW); //IN4
 }
+//-------------------------------
 void Halt(void) 
 {
     analogWrite(5,0); //Left
@@ -66,6 +69,7 @@ void Stop(void)
     State = 0;
     return;
 }
+//-------------------------------
 void Light (void){
   if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
       Serial.println("Error reading light values");
@@ -81,6 +85,7 @@ void Light (void){
   }
 return;
 }
+//-------------------------------
 void Garage(void){
    Serial.println("Garage");
    Halt();
@@ -100,48 +105,24 @@ void Garage(void){
   }
 return;
 }
+//-------------------------------
 void Corridor (void){
+  if(itteration == 0){
+    enc_clear();
+  }
   Serial.println("Corridor");
-  analogWrite(5, LPWM);
-  analogWrite(6, RPWM);
-  ProxL = 30;
-  ProxR = 30;
-  delay (1000);
-  return;
-}
-void StateMachine (void){
-        if (ProxR > 120){
-              Halt();
-              servo.write(180);
-              delay (380);
-              apds.readProximity(proximity_data);
-              ProxL = proximity_data;
-              if (ProxL > 180){
-                Garage();
-              }
-              else if (ProxL > 120){
-                Corridor();
-              }
-              else {
-                turnLeft();
-                ProxR = 30;
-              } 
-            }
-       
-      if (ProxF > 120){
-              Halt();
-              servo.write(0);
-              delay (380);
-              apds.readProximity(proximity_data);
-              ProxR = proximity_data;
-              if (ProxR > 180){
-                Garage();
-              }
-              else {
-                turnRight();
-                ProxF = 30;
-              }
-      }
-return;      
-}
+  
+  if(enc_getLeft() > enc_getRight()){
+    analogWrite(5, LPWM - 2*(enc_getLeft()-enc_getRight()));
+    analogWrite(6, RPWM + 2*(enc_getLeft()-enc_getRight()));
+  }
+  if(enc_getLeft() < enc_getRight()){
+    analogWrite(5, LPWM + 2*(enc_getRight()-enc_getLeft()));
+    analogWrite(6, RPWM - 2*(enc_getRight()-enc_getLeft()));
+  }
 
+  if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
+      State = 1;
+  }
+}
+//-------------------------------

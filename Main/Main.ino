@@ -38,6 +38,9 @@ float w1;
 float w2;
 float w3;
 float w4;
+//added:
+float w1Prev = 0;
+float w4Prev = 0;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********PWM Controll Variables**************//
@@ -55,6 +58,7 @@ const int RPWM = 85;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int State = 1;
 unsigned int time_ = 0;
+short itteration = 0;
 /*
  * 0: End
  * 1: Follow line
@@ -144,6 +148,15 @@ void loop() {
   w3 = analogRead(A2);
   w4 = analogRead(A3);
 
+  //Added:
+  if(w1 > 300){
+    w1Prev = w1;
+  }
+
+  if(w4 > 300){
+    w4Prev = w4;
+  }
+
   if((w1 <50 && w2 < 50 && w3 <50 && w4 < 50) && State != 0) {//We are on white, but we could just be on small gap, so wait a second to see if this is still the case
     
      time_ = millis();
@@ -160,7 +173,7 @@ void loop() {
      Stop();
   }
   
-  if(State == 1){//Follow line and scan
+  if(State == 1){//Follow line
     followLine();
   }
 
