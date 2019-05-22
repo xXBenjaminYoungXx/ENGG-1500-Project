@@ -1,6 +1,11 @@
 void followLine(){
      leftForwards();
      rightForwards(); 
+     
+     w1 = analogRead(A0);
+     w2 = analogRead(A1);
+     w3 = analogRead(A2);
+     w4 = analogRead(A3);
 
      // Serial.println(w1);
      // Serial.println(w2);
@@ -55,4 +60,23 @@ void followLine(){
           analogWrite(5, standardSpd);
           analogWrite(6, standardSpd);
      }
+     
+     if ((w1>200) && (w4 > 200)){
+      if(iteration==2){
+      analogWrite(5,0);
+      analogWrite(6,0);
+      delay(1000);
+      analogWrite(5,110);
+      analogWrite(6,0);
+      delay(350);
+        }
+      if(iteration==1){
+      analogWrite(5,0);
+      analogWrite(6,0);
+      delay(1000);
+      analogWrite(5,0);
+      analogWrite(6,110);
+      delay(350);
+      iteration=iteration+1;
+        }}
 }

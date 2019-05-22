@@ -1,6 +1,5 @@
-//-------------------------------
 void turnLeft(void){
-     Stop();
+     Halt();
      delay(1000);
      leftBackwards();
      rightForwards();
@@ -14,25 +13,24 @@ void turnLeft(void){
      delay(500);
 }
 void turnRight(void){
-     Stop();
+     Halt();
      delay(1000);
      leftBackwards();
      rightBackwards();
-     analogWrite(5, 170);
-     analogWrite(6, 170);
-     delay(200);
+     analogWrite(5, 90);
+     analogWrite(6, 90);
+     delay(210);
      leftForwards();
      rightBackwards();
      analogWrite(5, 170);
      analogWrite(6, 170);
-     delay(200);
+     delay(210);
      leftForwards();
      rightForwards();
      analogWrite(5, 100);
      analogWrite(6, 100);
-     delay(500);
+     delay(400);
 }
-//-------------------------------
 void leftBackwards(void) 
 {
     digitalWrite(8,LOW); //IN1
@@ -53,7 +51,6 @@ void rightForwards(void)
     digitalWrite(11,HIGH); //IN3
     digitalWrite(12,LOW); //IN4
 }
-//-------------------------------
 void Halt(void) 
 {
     analogWrite(5,0); //Left
@@ -64,74 +61,120 @@ void Stop(void)
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
     State = 0;
-    return;
 }
-//-------------------------------
+
 void Light (void){
-  Halt();
-  if(green_light > 450){
+  if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
+      Serial.println("Error reading light values");
+  }
+  
+  if(red_light >500){
+      digitalWrite(5,LOW);
+      digitalWrite(6,LOW);
+    }
+  else if(green_light > 500){
     delay (500);
-    State = 1;
+    followLine();
   }
 }
-//-------------------------------
-void wall(void){
-  if((w1Prev > 300) && (itteration == 0)){
-    turnLeft();
-    itteration = 1;
-    analogWrite(5,70);
-    analogWrite(6,70);
-  }
-  if((w4Prev > 300) && (itteration == 0)){
-    turnRight();
-    itteration = 1;
-    analogWrite(5,70);
-    analogWrite(6,70);
-  }
-  analogWrite(5,70);
-  analogWrite(6,70);
-  delay(3500);
 
-
-  if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
-      State = 1;
-      itteration = 0;
-  }
-}
-//-------------------------------
 void Garage(void){
    Serial.println("Garage");
    Halt();
    servo.write(90);
+   delay(185);
  
    analogWrite(5,70);
    analogWrite(6,70);
- 
-   if(proximity_data > 240)
-   {
-     Stop();
-   }
-}
-//-------------------------------
-void Corridor (void){
-  if(itteration == 0){
-    enc_clear();
-    itteration+=1;
-  }
-  Serial.println("Corridor");
-  
-  if(enc_getLeft() > enc_getRight()){
-    analogWrite(5, LPWM - 2*(enc_getLeft()-enc_getRight()));
-    analogWrite(6, RPWM + 2*(enc_getLeft()-enc_getRight()));
-  }
-  if(enc_getLeft() < enc_getRight()){
-    analogWrite(5, LPWM + 2*(enc_getRight()-enc_getLeft()));
-    analogWrite(6, RPWM - 2*(enc_getRight()-enc_getLeft()));
-  }
 
-  if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
-      State = 1;
-      itteration = 0;
+   if (!apds.readProximity(proximity_data)){
+     Serial.println("Error reading proximity value");
+   }
+ 
+  if(proximity_data > 240)
+  {
+     Stop();
   }
 }
-//-------------------------------
+
+void Corridor (void){
+  Serial.println("Corridor");
+  ProxL = 30;
+  ProxR = 30;
+  Halt();
+  servo.write(0);
+  delay(500);
+  apds.readProximity(proximity_data);
+  w2 = 0;
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(100);
+  while(proximity_data >90){
+    w1 = analogRead(A0);
+    apds.readProximity(proximity_data);
+    //Close to wall neg
+    if(proximity_data > 170){
+      analogWrite(5,70);
+      analogWrite(6, 70 - 2*(170-proximity_data));
+    }
+    if(proximity_data < 170){
+      analogWrite(5, 70);
+      analogWrite(6, 70 + 2*(170-proximity_data));
+    }
+    
+  }
+  servo.write(90);
+}
+void StateMachineR (void){
+        if (ProxR > 120){
+              Halt();
+              servo.write(90);
+              delay (250);
+              apds.readProximity(proximity_data);
+              ProxF = proximity_data;
+              Serial.print("ProxF: ");
+              Serial.println(ProxF);
+              delay (10);
+              
+              servo.write(180);
+              delay (250);
+              apds.readProximity(proximity_data);
+              ProxL = proximity_data;
+              Serial.print("ProxL: ");
+              Serial.println(ProxL);
+              delay (10);
+              
+              if (ProxL < 60 && ProxR > 240){
+                Serial.println("WallR");
+                turnLeft();
+                ProxR = 30;
+              }
+              
+              else if (ProxL > 60 && ProxF > 70){
+                Serial.println("GarageR");
+                Garage();
+              }
+              else if (ProxL > 60){
+                Corridor();
+              } 
+            }     
+}
+
+void StateMachineF (void){
+      if (ProxF > 140){
+              Halt();
+              servo.write(0);
+              delay (380);
+              apds.readProximity(proximity_data);
+              ProxR = proximity_data;
+              if (ProxR > 160){
+                Serial.println("GarageF");
+                Garage();
+              }
+              else {
+                Serial.println("WallF");
+                turnRight();
+                ProxF = 30;
+              }
+      }     
+}

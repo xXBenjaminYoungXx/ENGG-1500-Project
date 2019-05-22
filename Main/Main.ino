@@ -3,7 +3,7 @@
 //***********Librarys**************//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include <SparkFun_APDS9960.h>//RGB sensor
-#include <ENGG1500Lib.h>//Encoder stuff
+//#include <ENGG1500Lib.h>//Encoder stuff
 #include <Servo.h> //makes the sonar magic happen
 #include <Wire.h>
 
@@ -38,36 +38,20 @@ float w1;
 float w2;
 float w3;
 float w4;
-//added:
-float w1Prev = 0;
-float w4Prev = 0;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********PWM Controll Variables**************//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-int standardSpd = 70;
+int standardSpd = 75;
 int speedDiff = 0;
-
+int State = 1;
 float den;
 float numer;
 const int LPWM = 82;
-const int RPWM = 85;
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//***********State machiene variables**************//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int State = 1;
-unsigned int time_ = 0;
-short itteration = 0;
-/*
- * 0: End
- * 1: Follow line
- * 2: Dead End
- * 3: Hallway
- * 4: Gararge
- * 5: Scan
- * 6: RGB take over
- */
+const int RPWM = 88;
+int speedDiff2 = 0;
+int iteration =1;
 
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +93,6 @@ void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     servo.attach(SERVO);
-    servo.write(90);
      
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********IR SENSOR SETUP**************//
@@ -133,107 +116,54 @@ void setup() {
     pinMode(9,OUTPUT); //set IN2 as an output
     pinMode(11,OUTPUT); //set IN3 as an output
     pinMode(12,OUTPUT); //set IN4 as an output
-    
+    leftForwards();
+    rightForwards();
     delay(5000);
 }
 
 void loop() {
-  //Serial.println(State);
-  //Read Data For all variables
   if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
   }
-  if (  !apds.readAmbientLight(ambient_light) || !apds.readRedLight(red_light) || !apds.readGreenLight(green_light) || !apds.readBlueLight(blue_light) ) {
-      Serial.println("Error reading light values");
-  }
   
-  //This step was removed from follow line and is used here instead
-  w1 = analogRead(A0);
-  w2 = analogRead(A1);
-  w3 = analogRead(A2);
-  w4 = analogRead(A3);
-
-  //Added:
-  if(w1 > 300){
-    w1Prev = w1;
-  }
-
-  if(w4 > 300){
-    w4Prev = w4;
-  }
-
-  if((w1 <50 && w2 < 50 && w3 <50 && w4 < 50) && State != 0) {//We are on white, but we could just be on small gap, so wait a second to see if this is still the case
-    Serial.println("This Ran");
-    time_ = millis();
-    if(time_ + 1000 < millis()){
-       State = 6;
-    }
-   
-  }
-
-  if(proximity_data > 150 && State != 0){//Wall is seen need to scan
-      State = 6;
-  }
-
-  if(State == 0){
-     Stop();
-  }
-  
-  if(State == 1){//Follow line
-    followLine();
-  }
-
-  if(State == 2){
-    wall();
-  }
-
-  if(State == 3){
-    Corridor();//When line is detected state becomes one
-  }
-
-  if(State == 4){
-    Garage();//wen proxf becomes 225 state permenatly becomes 0
-  }
-  if(State == 5){
-    Light();
-  }
-  if(State == 6){//Scan
-        Halt();
-        
-        servo.write(0);
-        delay(1000);
-        apds.readProximity(proximity_data);
-        ProxR = proximity_data;
-    
-        servo.write(90);
-        delay(1000);
-        apds.readProximity(proximity_data);
-        ProxF = proximity_data;
-    
-        servo.write(180);
-        delay(1000);
-        apds.readProximity(proximity_data);
-        ProxL = proximity_data;
-    
-        servo.write(90);
-    
-        //Now to see what to do with results
-        if(ProxF > 150 && ProxR <150 && ProxL < 150){//We are at dead end
-          State = 2;
-        }
-    
-        else if(ProxF < 150 && ProxR > 150 && ProxL > 150){//We are at coridor, converging / diverging
-          State = 3;
-        }
-    
-        else if(ProxF > 150 && ProxR > 150 && ProxL > 150){//We are at gararge
-          State = 4;
-        }
-        else if(red_light > 450){
-          State = 5;
-        }
-        else{//I have left the possibility of Frount < 150 and left or right > 150, as there is no situation which this should happen. So the robot will stop.
-          State = 7;//This can be tweeked and should be removed before D-day, e.g make State = 1; as defult
-        }
+  if (State == 1){
+     Serial.println("I'm back A"); 
+     servo.write(0);
+     
+     for (Time = 0; Time < 185; Time ++){
+          followLine();
+          delay(1);
+     }
+      
+     apds.readProximity(proximity_data);
+     ProxR = proximity_data;            
+     Serial.print("ProxR: ");
+     Serial.println(ProxR);
+     StateMachineR();
+      if (State != 1){
+        return;
       }
+     Serial.println("I'm back B");  
+     followLine();
+     Serial.println("I'm back C"); 
+     servo.write(90);
+     
+     for (Time = 0; Time < 185; Time ++){
+          followLine();
+          delay(1);
+     }
+       
+     apds.readProximity(proximity_data);
+     ProxF = proximity_data;
+     Serial.print("ProxF: ");
+     Serial.println(ProxF);   
+     StateMachineF();
+       if (State != 1){
+        return;
+      }
+     Serial.println("I'm back D");  
+     followLine();
+     Serial.println("I'm back E");
+  }
+  
 }
