@@ -138,7 +138,7 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(State);
+  //Serial.println(State);
   //Read Data For all variables
   if ( !apds.readProximity(proximity_data) ) {
     Serial.println("Error reading proximity value");
@@ -163,11 +163,12 @@ void loop() {
   }
 
   if((w1 <50 && w2 < 50 && w3 <50 && w4 < 50) && State != 0) {//We are on white, but we could just be on small gap, so wait a second to see if this is still the case
-    
-     time_ = millis();
-     if(time_ + 1000 < millis()){//Second has passed 
-          State = 6;//We need to scan
-      }
+    Serial.println("This Ran");
+    time_ = millis();
+    if(time_ + 1000 < millis()){
+       State = 6;
+    }
+   
   }
 
   if(proximity_data > 150 && State != 0){//Wall is seen need to scan
@@ -182,35 +183,35 @@ void loop() {
     followLine();
   }
 
-  if(State = 2){
+  if(State == 2){
     wall();
   }
 
-  if(State = 3){
+  if(State == 3){
     Corridor();//When line is detected state becomes one
   }
 
-  if(State = 4){
+  if(State == 4){
     Garage();//wen proxf becomes 225 state permenatly becomes 0
   }
-  if(State = 5){
+  if(State == 5){
     Light();
   }
-  if(State = 6){//Scan
+  if(State == 6){//Scan
         Halt();
         
         servo.write(0);
-        delay(200);
+        delay(1000);
         apds.readProximity(proximity_data);
         ProxR = proximity_data;
     
         servo.write(90);
-        delay(200);
+        delay(1000);
         apds.readProximity(proximity_data);
         ProxF = proximity_data;
     
         servo.write(180);
-        delay(200);
+        delay(1000);
         apds.readProximity(proximity_data);
         ProxL = proximity_data;
     
@@ -228,11 +229,7 @@ void loop() {
         else if(ProxF > 150 && ProxR > 150 && ProxL > 150){//We are at gararge
           State = 4;
         }
-    
-        else if(ProxF < 150 && ProxR < 150 && ProxL < 150){//We are on a white part of track, hopefully this never occurs
-          State = 1;
-        }
-        else if(green_light > 160){
+        else if(red_light > 450){
           State = 5;
         }
         else{//I have left the possibility of Frount < 150 and left or right > 150, as there is no situation which this should happen. So the robot will stop.

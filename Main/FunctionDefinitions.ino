@@ -12,7 +12,6 @@ void turnLeft(void){
      analogWrite(5, 100);
      analogWrite(6, 100);
      delay(500);
-     return;
 }
 void turnRight(void){
      Stop();
@@ -32,7 +31,6 @@ void turnRight(void){
      analogWrite(5, 100);
      analogWrite(6, 100);
      delay(500);
-     return;
 }
 //-------------------------------
 void leftBackwards(void) 
@@ -60,7 +58,6 @@ void Halt(void)
 {
     analogWrite(5,0); //Left
     analogWrite(6,0); //Right
-    return;
 }
 void Stop(void)
 {
@@ -72,29 +69,29 @@ void Stop(void)
 //-------------------------------
 void Light (void){
   Halt();
-  if(green_light < 150){
+  if(green_light > 450){
     delay (500);
     State = 1;
   }
 }
 //-------------------------------
 void wall(void){
-  if((w1Prev > 300) && (itteration = 0)){
+  if((w1Prev > 300) && (itteration == 0)){
     turnLeft();
     itteration = 1;
     analogWrite(5,70);
     analogWrite(6,70);
-    return;
   }
-  if((w4Prev > 300) && (itteration = 0)){
+  if((w4Prev > 300) && (itteration == 0)){
     turnRight();
     itteration = 1;
     analogWrite(5,70);
     analogWrite(6,70);
-    return;
   }
   analogWrite(5,70);
   analogWrite(6,70);
+  delay(3500);
+
 
   if(w1 > 70 || w2 > 70 || w3 > 70 || w4 > 70){
       State = 1;
