@@ -1,3 +1,4 @@
+#include <ENGG1500Lib.h>
 void turnLeft(void){
      Halt();
      delay(1000);
@@ -103,25 +104,23 @@ void Corridor (void){
   ProxR = 30;
   Halt();
   servo.write(0);
+  enc_clear();
   delay(500);
   apds.readProximity(proximity_data);
-  w2 = 0;
-  analogWrite(5, 70);
-  analogWrite(6, 70);
-  delay(100);
-  while(proximity_data >90){
-    w1 = analogRead(A0);
+  while(proximity_data >80){
+    if(enc_getLeft() < enc_getRight()){//More power needs to go to left
+      analogWrite(5, 80 + 8*(enc_getRight()-enc_getLeft()));
+      analogWrite(6, 80 - 8*(enc_getRight()-enc_getLeft()));
+    }
+    if(enc_getLeft() > enc_getRight()){
+      analogWrite(5, 80 - 8*(enc_getLeft()-enc_getRight()));
+      analogWrite(6, 80 + 8*(enc_getLeft()-enc_getRight()));
+    }
+    else{
+      analogWrite(5, 80);
+      analogWrite(6, 80);
+    }
     apds.readProximity(proximity_data);
-    //Close to wall neg
-    if(proximity_data > 170){
-      analogWrite(5,70);
-      analogWrite(6, 70 - 2*(170-proximity_data));
-    }
-    if(proximity_data < 170){
-      analogWrite(5, 70);
-      analogWrite(6, 70 + 2*(170-proximity_data));
-    }
-    
   }
   servo.write(90);
 }
