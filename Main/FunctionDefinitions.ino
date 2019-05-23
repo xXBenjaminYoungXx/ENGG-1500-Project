@@ -108,16 +108,16 @@ void Corridor (void){
   delay(500);
   apds.readProximity(proximity_data);
   while(proximity_data >80){
-    if(enc_getLeft() < enc_getRight()){//More power needs to go to left
-      analogWrite(5, 80 + 8*(enc_getRight()-enc_getLeft()));
-      analogWrite(6, 80 - 8*(enc_getRight()-enc_getLeft()));
+    if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
+      analogWrite(5, 85 + 20*(enc_getRight()-enc_getLeft()));
+      analogWrite(6, 80 - 20*(enc_getRight()-enc_getLeft()));
     }
     if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 80 - 8*(enc_getLeft()-enc_getRight()));
-      analogWrite(6, 80 + 8*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 85 - 20*(enc_getLeft()-enc_getRight()));
+      analogWrite(6, 80 + 20*(enc_getLeft()-enc_getRight()));
     }
     else{
-      analogWrite(5, 80);
+      analogWrite(5, 85);
       analogWrite(6, 80);
     }
     apds.readProximity(proximity_data);
