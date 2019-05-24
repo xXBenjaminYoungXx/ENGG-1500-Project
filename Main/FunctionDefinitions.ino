@@ -107,17 +107,18 @@ void Corridor (void){
   w3 = 0;
   w4 = 0;
   Halt();
-  servo.write(0);
+  servo.write(90);
   delay(500);
   apds.readProximity(proximity_data);
   enc_clear();
   millisTime = millis();
-   while(millisTime +1250 > millis()){
+  
+  while(millisTime +750 > millis()){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
       analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
-    if(enc_getLeft() > enc_getRight()){
+    else if(enc_getLeft() > enc_getRight()){
       analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
@@ -129,27 +130,18 @@ void Corridor (void){
     apds.readProximity(proximity_data);
   }
     
-     Halt();
-     servo.write(90);
-     delay(250); 
-     enc_clear();
-     w1 = analogRead(A0);
-     w2 = analogRead(A1);
-     w3 = analogRead(A2);
-     w4 = analogRead(A3);
-     apds.readProximity(proximity_data);
-      if(proximity_data > 80){
-         Stop();
-      }
-     servo.write(0);
-     delay(250);
-     apds.readProximity(proximity_data);
-  while((proximity_data >80) && (w1 < 70) && (w2 < 70) && (w3 < 70) && (w4 < 70)){
+    w1 = analogRead(A0);
+    w2 = analogRead(A1);
+    w3 = analogRead(A2);
+    w4 = analogRead(A3);
+    apds.readProximity(proximity_data);
+    
+  while((proximity_data < 140) && (w1 < 70) && (w2 < 70) && (w3 < 70) && (w4 < 70)){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
       analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
-    if(enc_getLeft() > enc_getRight()){
+    else if(enc_getLeft() > enc_getRight()){
       analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
@@ -158,11 +150,14 @@ void Corridor (void){
       analogWrite(6, 80);
     }
     w1 = analogRead(A0);
-     w2 = analogRead(A1);
-     w3 = analogRead(A2);
-     w4 = analogRead(A3);
+    w2 = analogRead(A1);
+    w3 = analogRead(A2);
+    w4 = analogRead(A3);
     Serial.println(enc_getRight());
     apds.readProximity(proximity_data);
+    if (proximity_data > 140){
+      Stop();
+    }
   }
   servo.write(90);
 }
