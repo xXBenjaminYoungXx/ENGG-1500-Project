@@ -159,6 +159,7 @@ void loop() {
        
      apds.readProximity(proximity_data);
      ProxF = proximity_data;
+    // Light();
      Serial.print("ProxF: ");
      Serial.println(ProxF);   
      StateMachineF();

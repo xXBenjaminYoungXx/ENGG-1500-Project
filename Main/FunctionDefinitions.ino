@@ -73,6 +73,10 @@ void Light (void){
       digitalWrite(5,LOW);
       digitalWrite(6,LOW);
     }
+  else if(red_light >500){
+      digitalWrite(5,LOW);
+      digitalWrite(6,LOW);
+  }
   else if(green_light > 500){
     delay (500);
     followLine();
