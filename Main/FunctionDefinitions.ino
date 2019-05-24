@@ -112,48 +112,49 @@ void Corridor (void){
   apds.readProximity(proximity_data);
   enc_clear();
   millisTime = millis();
-   while(millisTime +500 > millis()){
+   while(millisTime +1250 > millis()){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
-      analogWrite(5, 85 + 15*(enc_getRight()-enc_getLeft()));
+      analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
     if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 85 - 15*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
     else{
-      analogWrite(5, 85);
+      analogWrite(5, 86);
       analogWrite(6, 80);
     }
     Serial.println(enc_getRight());
     apds.readProximity(proximity_data);
   }
+    
+     Halt();
+     servo.write(90);
+     delay(250); 
+     enc_clear();
      w1 = analogRead(A0);
      w2 = analogRead(A1);
      w3 = analogRead(A2);
      w4 = analogRead(A3);
-     
-     servo.write(90);
-     delay(500);
      apds.readProximity(proximity_data);
-     if(proximity_data>65){
-      Stop();
-     }
-     
+      if(proximity_data > 80){
+         Stop();
+      }
      servo.write(0);
-     delay(500);
-     
+     delay(250);
+     apds.readProximity(proximity_data);
   while((proximity_data >80) && (w1 < 70) && (w2 < 70) && (w3 < 70) && (w4 < 70)){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
-      analogWrite(5, 85 + 15*(enc_getRight()-enc_getLeft()));
+      analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
     if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 85 - 15*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
     else{
-      analogWrite(5, 85);
+      analogWrite(5, 86);
       analogWrite(6, 80);
     }
     w1 = analogRead(A0);
@@ -189,11 +190,6 @@ void StateMachineR (void){
                 turnLeft();
                 ProxR = 30;
               }
-              
-              else if (ProxL > 60 && ProxF > 70){
-                Serial.println("GarageR");
-                Garage();
-              }
               else if (ProxL > 60){
                 Corridor();
               } 
@@ -207,14 +203,9 @@ void StateMachineF (void){
               delay (380);
               apds.readProximity(proximity_data);
               ProxR = proximity_data;
-              if (ProxR > 120){
-                Serial.println("GarageF");
-                Garage();
-              }
-              else {
                 Serial.println("WallF");
                 turnRight();
                 ProxF = 30;
-              }
+              
       }     
 }
