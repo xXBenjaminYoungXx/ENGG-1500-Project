@@ -16,21 +16,21 @@ void turnLeft(void){
 void turnRight(void){
      Halt();
      delay(1000);
-     leftBackwards();
-     rightBackwards();
-     analogWrite(5, 90);
-     analogWrite(6, 90);
-     delay(350);
      leftForwards();
      rightBackwards();
-     analogWrite(5, 170);
-     analogWrite(6, 170);
-     delay(210);
+     enc_clear();
+     while(enc_getLeft() < 8 || enc_getRight() < 8){
+        if(enc_getLeft() < 8){
+          analogWrite(5,90);
+        }
+        if(enc_getRight() < 8){
+          analogWrite(6, 90);
+        }
+     }
+     Halt();
+     delay(300);
      leftForwards();
      rightForwards();
-     analogWrite(5, 100);
-     analogWrite(6, 100);
-     delay(400);
 }
 void leftBackwards(void) 
 {
@@ -132,6 +132,17 @@ void Corridor (void){
      w2 = analogRead(A1);
      w3 = analogRead(A2);
      w4 = analogRead(A3);
+     
+     servo.write(90);
+     delay(500);
+     apds.readProximity(proximity_data);
+     if(proximity_data>65){
+      Stop();
+     }
+     
+     servo.write(0);
+     delay(500);
+     
   while((proximity_data >80) && (w1 < 70) && (w2 < 70) && (w3 < 70) && (w4 < 70)){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
       analogWrite(5, 85 + 15*(enc_getRight()-enc_getLeft()));
