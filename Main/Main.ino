@@ -15,6 +15,7 @@
 Servo servo;
 int servoAngle = 0; //Servo intial position
 int Time;
+
 uint8_t ProxF = 30;
 uint8_t ProxL = 30;
 uint8_t ProxR = 30;
@@ -52,7 +53,7 @@ const int LPWM = 82;
 const int RPWM = 88;
 int speedDiff2 = 0;
 int iteration =1;
-
+unsigned int millisTime = 0;
 void setup() {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //***********RGB SETUP**************//

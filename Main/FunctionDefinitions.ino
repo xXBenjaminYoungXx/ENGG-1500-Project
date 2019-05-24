@@ -20,7 +20,7 @@ void turnRight(void){
      rightBackwards();
      analogWrite(5, 90);
      analogWrite(6, 90);
-     delay(210);
+     delay(350);
      leftForwards();
      rightBackwards();
      analogWrite(5, 170);
@@ -104,22 +104,24 @@ void Corridor (void){
   ProxR = 30;
   Halt();
   servo.write(0);
-  enc_clear();
   delay(500);
   apds.readProximity(proximity_data);
+  enc_clear();
+ // millisTime = millis();
   while(proximity_data >80){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
-      analogWrite(5, 85 + 20*(enc_getRight()-enc_getLeft()));
-      analogWrite(6, 80 - 20*(enc_getRight()-enc_getLeft()));
+      analogWrite(5, 85 + 15*(enc_getRight()-enc_getLeft()));
+      analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
     if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 85 - 20*(enc_getLeft()-enc_getRight()));
-      analogWrite(6, 80 + 20*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 85 - 15*(enc_getLeft()-enc_getRight()));
+      analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
     else{
       analogWrite(5, 85);
       analogWrite(6, 80);
     }
+    Serial.println(enc_getRight());
     apds.readProximity(proximity_data);
   }
   servo.write(90);
