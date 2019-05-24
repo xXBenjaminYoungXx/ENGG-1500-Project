@@ -196,7 +196,7 @@ void StateMachineF (void){
               delay (380);
               apds.readProximity(proximity_data);
               ProxR = proximity_data;
-              if (ProxR > 160){
+              if (ProxR > 120){
                 Serial.println("GarageF");
                 Garage();
               }
