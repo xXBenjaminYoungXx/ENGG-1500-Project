@@ -119,18 +119,17 @@ void Corridor (void){
   
   while(millisTime +750 > millis()){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
-      analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
+      analogWrite(5, 80 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
     else if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 80 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
     else{
-      analogWrite(5, 86);
+      analogWrite(5, 80);
       analogWrite(6, 80);
     }
-    Serial.println(enc_getRight());
     apds.readProximity(proximity_data);
   }
     
@@ -142,22 +141,21 @@ void Corridor (void){
     
   while((proximity_data < 140) && (w1 < 70) && (w2 < 70) && (w3 < 70) && (w4 < 70)){
     if(enc_getLeft() < enc_getRight()){//More power needs to go to left0
-      analogWrite(5, 86 + 15*(enc_getRight()-enc_getLeft()));
+      analogWrite(5, 80 + 15*(enc_getRight()-enc_getLeft()));
       analogWrite(6, 80 - 15*(enc_getRight()-enc_getLeft()));
     }
     else if(enc_getLeft() > enc_getRight()){
-      analogWrite(5, 86 - 15*(enc_getLeft()-enc_getRight()));
+      analogWrite(5, 80 - 15*(enc_getLeft()-enc_getRight()));
       analogWrite(6, 80 + 15*(enc_getLeft()-enc_getRight()));
     }
     else{
-      analogWrite(5, 86);
+      analogWrite(5, 80);
       analogWrite(6, 80);
     }
     w1 = analogRead(A0);
     w2 = analogRead(A1);
     w3 = analogRead(A2);
     w4 = analogRead(A3);
-    Serial.println(enc_getRight());
     apds.readProximity(proximity_data);
     if (proximity_data > 140){
       Stop();

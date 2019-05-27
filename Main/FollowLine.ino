@@ -7,8 +7,8 @@ void followLine(){
      w3 = analogRead(A2);
      w4 = analogRead(A3);
 
-     // Serial.println(w1);
-     // Serial.println(w2);
+     //Serial.println(w1);
+    // Serial.println(w2);
      // Serial.println(w3);
      // Serial.println(w4);
 
@@ -21,10 +21,10 @@ void followLine(){
      numer=w1*x1+w2*x2+w3*x3+w4*x4;
      den=w1+w2+w3+w4;
      
-     float lineDist = numer/den;
+     float lineDist = (numer/den)+0.3;
      
      
-     speedDiff = lineDist*8;
+     speedDiff = (lineDist)*8;
 
     /* if(w4 > 370){
         turnLeft();
@@ -46,14 +46,14 @@ void followLine(){
      if(speedDiff>standardSpd){
           speedDiff = standardSpd;
      }
-     
-     if(lineDist>-0.5){//right
-          analogWrite(5, standardSpd + speedDiff);
-          analogWrite(6, standardSpd - speedDiff);
-     }
-     else if(lineDist<0.5){
+
+     if(lineDist<-0.5){//right
           analogWrite(5, standardSpd - speedDiff);
           analogWrite(6, standardSpd + speedDiff);
+     }
+     else if(lineDist>0.5){
+          analogWrite(5, standardSpd + speedDiff);
+          analogWrite(6, standardSpd - speedDiff);
      }
      else{
      
@@ -70,13 +70,14 @@ void followLine(){
       analogWrite(6,0);
       delay(350);
         }
-      if(iteration==1){
+      else{
       analogWrite(5,0);
       analogWrite(6,0);
       delay(1000);
       analogWrite(5,0);
       analogWrite(6,110);
       delay(350);
-      iteration=iteration+1;
-        }}
+      
+        }iteration=iteration+1;
+        }
 }

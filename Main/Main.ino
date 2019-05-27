@@ -44,7 +44,7 @@ float w4;
 //***********PWM Controll Variables**************//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-int standardSpd = 95;
+int standardSpd = 70;
 int speedDiff = 0;
 int State = 1;
 float den;
@@ -128,10 +128,10 @@ void setup() {
 
 void loop() {
   if ( !apds.readProximity(proximity_data) ) {
-    Serial.println("Error reading proximity value");
+  //  Serial.println("Error reading proximity value");
   }
   if (State == 1){
-     Serial.println("I'm back A"); 
+    // Serial.println("I'm back A"); 
      servo.write(0);
      
      for (Time = 0; Time < 185; Time ++){
@@ -141,15 +141,15 @@ void loop() {
       
      apds.readProximity(proximity_data);
      ProxR = proximity_data;            
-     Serial.print("ProxR: ");
-     Serial.println(ProxR);
+     //Serial.print("ProxR: ");
+    // Serial.println(ProxR);
      StateMachineR();
       if (State != 1){
         return;
       }
-     Serial.println("I'm back B");  
+    // Serial.println("I'm back B");  
      followLine();
-     Serial.println("I'm back C"); 
+    // Serial.println("I'm back C"); 
      servo.write(90);
      
      for (Time = 0; Time < 185; Time ++){
@@ -160,14 +160,14 @@ void loop() {
      apds.readProximity(proximity_data);
      ProxF = proximity_data;
     // Light();
-     Serial.print("ProxF: ");
-     Serial.println(ProxF);   
+   //  Serial.print("ProxF: ");
+    // Serial.println(ProxF);   
      StateMachineF();
        if (State != 1){
         return;
       }
-     Serial.println("I'm back D");  
+    // Serial.println("I'm back D");  
      followLine();
-     Serial.println("I'm back E");
+    // Serial.println("I'm back E");
   }
 }
